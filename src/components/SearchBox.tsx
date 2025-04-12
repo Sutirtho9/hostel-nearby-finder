@@ -19,7 +19,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
     } else {
       toast({
         title: "Please enter a location",
-        description: "Enter a city, address or point of interest",
+        description: "Enter an Indian city, neighborhood, or landmark",
         variant: "destructive"
       });
     }
@@ -61,14 +61,14 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   
   return (
     <div className="w-full max-w-3xl bg-white rounded-lg shadow-xl p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Find hostels near you</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Find hostels in India</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-grow">
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <Input
               type="text"
-              placeholder="City, address or point of interest"
+              placeholder="Delhi, Mumbai, Bangalore, or other Indian cities"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="pl-10 pr-4 py-2 w-full"

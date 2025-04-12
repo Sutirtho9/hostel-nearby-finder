@@ -6,16 +6,19 @@ import SearchBox from '@/components/SearchBox';
 import HostelCard, { Hostel } from '@/components/HostelCard';
 import { searchHostels } from '@/data/hostels';
 import { MapPin } from 'lucide-react';
+import CitySelector from '@/components/CitySelector';
 
 const Index = () => {
   const [searchResults, setSearchResults] = useState<Hostel[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchLocation, setSearchLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   const handleSearch = (location: string) => {
     setIsLoading(true);
     setSearchLocation(location);
+    setSelectedCity(null);
     
     // Simulate API call delay
     setTimeout(() => {
@@ -26,6 +29,27 @@ const Index = () => {
     }, 1500);
   };
 
+  const handleCitySelect = (city: string) => {
+    if (city === "") {
+      setSelectedCity(null);
+      setHasSearched(false);
+      setSearchResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    setSelectedCity(city);
+    setSearchLocation(city);
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      const results = searchHostels(city);
+      setSearchResults(results);
+      setHasSearched(true);
+      setIsLoading(false);
+    }, 800);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -34,10 +58,10 @@ const Index = () => {
       <div className="hero">
         <div className="container mx-auto px-4 py-12 flex flex-col items-center justify-center h-full">
           <h1 className="text-4xl md:text-5xl font-bold text-white text-center mb-6">
-            Find the Perfect Hostel Near You
+            Find the Perfect Hostel in India
           </h1>
           <p className="text-xl text-white text-center mb-8 max-w-2xl">
-            Discover affordable and social accommodations wherever your journey takes you
+            Discover affordable and social accommodations in major Indian cities
           </p>
           
           {/* Search Box */}
@@ -47,13 +71,18 @@ const Index = () => {
         </div>
       </div>
       
+      {/* City Selector - Show even if no search has been made */}
+      <div className="container mx-auto px-4 py-8">
+        <CitySelector onCitySelect={handleCitySelect} selectedCity={selectedCity} />
+      </div>
+      
       {/* Results Section */}
       {hasSearched && (
         <div className="container mx-auto px-4 py-8">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-hostel-blue mb-4"></div>
-              <p className="text-xl text-gray-600">Searching hostels near your location...</p>
+              <p className="text-xl text-gray-600">Searching hostels in {searchLocation}...</p>
             </div>
           ) : (
             <>
@@ -65,7 +94,7 @@ const Index = () => {
                 </h2>
                 <div className="flex items-center text-gray-600 mt-1">
                   <MapPin size={18} className="mr-1" />
-                  <span>{searchLocation.split(',').length > 1 ? 'Your location' : searchLocation}</span>
+                  <span>{selectedCity || searchLocation}</span>
                 </div>
               </div>
               
@@ -79,8 +108,8 @@ const Index = () => {
         </div>
       )}
       
-      {/* Features Section (only show if no search has been made) */}
-      {!hasSearched && (
+      {/* Features Section (only show if no search has been made and no city selected) */}
+      {!hasSearched && !selectedCity && (
         <div className="container mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose HostelConnect?</h2>
           
