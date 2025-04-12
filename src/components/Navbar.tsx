@@ -23,10 +23,12 @@ const Navbar = () => {
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-hostel-blue transition">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-hostel-blue transition">Contact</Link>
-            <Button className="bg-hostel-blue hover:bg-hostel-lightBlue">
-              <User size={18} className="mr-1" />
-              <span>Sign In</span>
-            </Button>
+            <Link to="/auth">
+              <Button className="bg-hostel-blue hover:bg-hostel-lightBlue">
+                <User size={18} className="mr-1" />
+                <span>Sign In</span>
+              </Button>
+            </Link>
           </div>
           
           {/* Mobile Menu Button */}
@@ -44,10 +46,12 @@ const Navbar = () => {
             <Link to="/about" className="block py-2 px-4 text-gray-700 hover:bg-gray-100">About</Link>
             <Link to="/contact" className="block py-2 px-4 text-gray-700 hover:bg-gray-100">Contact</Link>
             <div className="py-2 px-4">
-              <Button className="w-full bg-hostel-blue hover:bg-hostel-lightBlue">
-                <User size={18} className="mr-1" />
-                <span>Sign In</span>
-              </Button>
+              <Link to="/auth" className="block w-full">
+                <Button className="w-full bg-hostel-blue hover:bg-hostel-lightBlue">
+                  <User size={18} className="mr-1" />
+                  <span>Sign In</span>
+                </Button>
+              </Link>
             </div>
           </div>
         )}
