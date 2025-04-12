@@ -23,7 +23,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface LoginFormProps {
-  onLogin: (success: boolean, message: string) => void;
+  onLogin: (email: string, password: string) => Promise<void>;
 }
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
@@ -42,17 +42,8 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call with a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // This is where you would normally connect to your authentication backend
-      // For demo purposes, we're accepting any valid form submission
-      console.log("Login attempt:", data);
-      
-      // Simulate successful login
-      onLogin(true, "You have successfully logged in");
+      await onLogin(data.email, data.password);
     } catch (error) {
-      onLogin(false, "Login failed. Please try again.");
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);

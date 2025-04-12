@@ -6,22 +6,42 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
 import { toast } from '@/components/ui/use-toast';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const navigate = useNavigate();
+  const { login, signup } = useAuthContext();
 
-  const handleAuth = (success: boolean, message: string, isLogin: boolean) => {
+  const handleLogin = async (email: string, password: string) => {
+    const success = await login(email, password);
     if (success) {
       toast({
-        title: isLogin ? "Login Successful" : "Account Created Successfully",
-        description: message,
+        title: "Login Successful",
+        description: "You have successfully logged in",
       });
       navigate('/');
     } else {
       toast({
-        title: isLogin ? "Login Failed" : "Signup Failed",
-        description: message,
+        title: "Login Failed",
+        description: "Invalid credentials. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSignup = async (name: string, email: string, password: string) => {
+    const success = await signup(name, email, password);
+    if (success) {
+      toast({
+        title: "Account Created Successfully",
+        description: "Your account has been created and you are now logged in",
+      });
+      navigate('/');
+    } else {
+      toast({
+        title: "Signup Failed",
+        description: "Unable to create account. Please try again.",
         variant: "destructive"
       });
     }
@@ -52,10 +72,10 @@ const AuthPage = () => {
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             <TabsContent value="login">
-              <LoginForm onLogin={(success, message) => handleAuth(success, message, true)} />
+              <LoginForm onLogin={handleLogin} />
             </TabsContent>
             <TabsContent value="signup">
-              <SignupForm onSignup={(success, message) => handleAuth(success, message, false)} />
+              <SignupForm onSignup={handleSignup} />
             </TabsContent>
           </Tabs>
         </CardContent>

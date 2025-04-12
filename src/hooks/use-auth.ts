@@ -8,8 +8,12 @@ interface User {
 }
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Try to load user from sessionStorage if available
+  const savedUser = sessionStorage.getItem('user');
+  const initialUser = savedUser ? JSON.parse(savedUser) : null;
+  
+  const [user, setUser] = useState<User | null>(initialUser);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!initialUser);
   const [isLoading, setIsLoading] = useState(false);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -28,6 +32,8 @@ export const useAuth = () => {
       
       setUser(mockUser);
       setIsAuthenticated(true);
+      // Save user to sessionStorage
+      sessionStorage.setItem('user', JSON.stringify(mockUser));
       setIsLoading(false);
       return true;
     } catch (error) {
@@ -52,6 +58,8 @@ export const useAuth = () => {
       
       setUser(mockUser);
       setIsAuthenticated(true);
+      // Save user to sessionStorage
+      sessionStorage.setItem('user', JSON.stringify(mockUser));
       setIsLoading(false);
       return true;
     } catch (error) {
@@ -63,6 +71,8 @@ export const useAuth = () => {
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
+    // Remove user from sessionStorage
+    sessionStorage.removeItem('user');
   };
 
   return {

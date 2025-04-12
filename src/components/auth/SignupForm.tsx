@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +31,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface SignupFormProps {
-  onSignup: (success: boolean, message: string) => void;
+  onSignup: (name: string, email: string, password: string) => Promise<void>;
 }
 
 const SignupForm = ({ onSignup }: SignupFormProps) => {
@@ -55,17 +54,8 @@ const SignupForm = ({ onSignup }: SignupFormProps) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call with a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // This is where you would normally connect to your authentication backend
-      // For demo purposes, we're accepting any valid form submission
-      console.log("Signup data:", data);
-      
-      // Simulate successful signup
-      onSignup(true, "Your account has been created successfully!");
+      await onSignup(data.name, data.email, data.password);
     } catch (error) {
-      onSignup(false, "Signup failed. Please try again.");
       console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
