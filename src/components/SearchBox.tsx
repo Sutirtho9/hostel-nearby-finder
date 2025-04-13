@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, School } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
@@ -82,7 +82,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
             Search
           </Button>
         </div>
-        <div className="text-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center">
           <Button
             type="button"
             variant="outline"
@@ -92,6 +92,11 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
             <MapPin size={18} className="mr-2" />
             Use current location
           </Button>
+          
+          <div className="text-sm text-gray-500 mt-2 sm:mt-0 flex items-center">
+            <School size={16} className="mr-1" />
+            <span>Or use university search below</span>
+          </div>
         </div>
       </form>
     </div>

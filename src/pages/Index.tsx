@@ -5,8 +5,12 @@ import Footer from '@/components/Footer';
 import SearchBox from '@/components/SearchBox';
 import HostelCard, { Hostel } from '@/components/HostelCard';
 import { searchHostels } from '@/data/hostels';
-import { MapPin } from 'lucide-react';
+import { MapPin, School } from 'lucide-react';
 import CitySelector from '@/components/CitySelector';
+import UniversitySearch from '@/components/UniversitySearch';
+import HostelMap from '@/components/HostelMap';
+import { University, getHostelsNearUniversity } from '@/data/universities';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [searchResults, setSearchResults] = useState<Hostel[]>([]);
@@ -14,11 +18,19 @@ const Index = () => {
   const [searchLocation, setSearchLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
+  const [searchType, setSearchType] = useState<'location' | 'university'>('location');
+  const [showMap, setShowMap] = useState(false);
 
   const handleSearch = (location: string) => {
+    if (selectedUniversity) {
+      setSelectedUniversity(null);
+    }
+    
     setIsLoading(true);
     setSearchLocation(location);
     setSelectedCity(null);
+    setSearchType('location');
     
     // Simulate API call delay
     setTimeout(() => {
@@ -37,9 +49,14 @@ const Index = () => {
       return;
     }
 
+    if (selectedUniversity) {
+      setSelectedUniversity(null);
+    }
+
     setIsLoading(true);
     setSelectedCity(city);
     setSearchLocation(city);
+    setSearchType('location');
     
     // Simulate API call delay
     setTimeout(() => {
@@ -48,6 +65,37 @@ const Index = () => {
       setHasSearched(true);
       setIsLoading(false);
     }, 800);
+  };
+  
+  const handleUniversitySelect = (university: University | null) => {
+    setSelectedUniversity(university);
+    
+    if (!university) {
+      if (!selectedCity && !searchLocation) {
+        setHasSearched(false);
+        setSearchResults([]);
+      }
+      return;
+    }
+    
+    setIsLoading(true);
+    setSearchType('university');
+    setSelectedCity(null);
+    setSearchLocation(university.name);
+    
+    // Simulate API call delay to get hostels near the university
+    setTimeout(() => {
+      const allHostels = searchHostels(university.location);
+      // Filter hostels to only include those within 10km of the university
+      const nearbyHostels = getHostelsNearUniversity(university.id, allHostels, 10);
+      setSearchResults(nearbyHostels);
+      setHasSearched(true);
+      setIsLoading(false);
+    }, 1200);
+  };
+  
+  const toggleMap = () => {
+    setShowMap(prev => !prev);
   };
 
   return (
@@ -71,9 +119,22 @@ const Index = () => {
         </div>
       </div>
       
-      {/* City Selector - Show even if no search has been made */}
+      {/* Search Options Section */}
       <div className="container mx-auto px-4 py-8">
-        <CitySelector onCitySelect={handleCitySelect} selectedCity={selectedCity} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* City Selector */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <CitySelector onCitySelect={handleCitySelect} selectedCity={selectedCity} />
+          </div>
+          
+          {/* University Search */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <UniversitySearch 
+              onUniversitySelect={handleUniversitySelect}
+              selectedUniversity={selectedUniversity}
+            />
+          </div>
+        </div>
       </div>
       
       {/* Results Section */}
@@ -82,21 +143,57 @@ const Index = () => {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-hostel-blue mb-4"></div>
-              <p className="text-xl text-gray-600">Searching hostels in {searchLocation}...</p>
+              <p className="text-xl text-gray-600">
+                {searchType === 'university' 
+                  ? `Searching hostels near ${searchLocation}...` 
+                  : `Searching hostels in ${searchLocation}...`}
+              </p>
             </div>
           ) : (
             <>
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-800">
-                  {searchResults.length > 0 
-                    ? `${searchResults.length} hostels found` 
-                    : "No hostels found"}
-                </h2>
-                <div className="flex items-center text-gray-600 mt-1">
-                  <MapPin size={18} className="mr-1" />
-                  <span>{selectedCity || searchLocation}</span>
+              <div className="mb-6 flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800">
+                    {searchResults.length > 0 
+                      ? `${searchResults.length} hostels found` 
+                      : "No hostels found"}
+                  </h2>
+                  <div className="flex items-center text-gray-600 mt-1">
+                    {searchType === 'university' ? (
+                      <>
+                        <School size={18} className="mr-1" />
+                        <span>Near {selectedUniversity?.name}</span>
+                      </>
+                    ) : (
+                      <>
+                        <MapPin size={18} className="mr-1" />
+                        <span>{selectedCity || searchLocation}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
+                
+                {searchResults.length > 0 && (
+                  <Button 
+                    variant="outline" 
+                    className="ml-4"
+                    onClick={toggleMap}
+                  >
+                    {showMap ? "Hide Map" : "Show Map"}
+                  </Button>
+                )}
               </div>
+              
+              {/* Map View */}
+              {showMap && searchResults.length > 0 && (
+                <div className="mb-8">
+                  <HostelMap 
+                    hostels={searchResults}
+                    university={selectedUniversity}
+                    className="h-80 md:h-96 lg:h-[500px]"
+                  />
+                </div>
+              )}
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {searchResults.map(hostel => (
@@ -108,8 +205,8 @@ const Index = () => {
         </div>
       )}
       
-      {/* Features Section (only show if no search has been made and no city selected) */}
-      {!hasSearched && !selectedCity && (
+      {/* Features Section (only show if no search has been made and no university/city selected) */}
+      {!hasSearched && !selectedCity && !selectedUniversity && (
         <div className="container mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose HostelConnect?</h2>
           
@@ -134,12 +231,10 @@ const Index = () => {
             
             <div className="text-center p-6 bg-white rounded-lg shadow-md">
               <div className="rounded-full bg-hostel-lightBlue bg-opacity-20 p-4 inline-flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-hostel-blue">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                </svg>
+                <School className="text-hostel-blue" size={28} />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Verified Reviews</h3>
-              <p className="text-gray-600">Read authentic reviews from fellow travelers to make informed decisions.</p>
+              <h3 className="text-xl font-semibold mb-3">University Proximity</h3>
+              <p className="text-gray-600">Find hostels within a 10km radius of top educational institutions across India.</p>
             </div>
           </div>
         </div>

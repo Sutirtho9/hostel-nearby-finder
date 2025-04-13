@@ -1,0 +1,55 @@
+
+/* Add this if it doesn't exist already */
+.hero {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aG9zdGVsfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Colors */
+:root {
+  --hostel-blue: #3b82f6;
+  --hostel-light-blue: #60a5fa;
+  --hostel-orange: #f97316;
+  --hostel-light-orange: #fdba74;
+}
+
+.text-hostel-blue {
+  color: var(--hostel-blue);
+}
+
+.text-hostel-orange {
+  color: var(--hostel-orange);
+}
+
+.bg-hostel-blue {
+  background-color: var(--hostel-blue);
+}
+
+.bg-hostel-lightBlue {
+  background-color: var(--hostel-light-blue);
+}
+
+.bg-hostel-orange {
+  background-color: var(--hostel-orange);
+}
+
+.bg-hostel-lightOrange {
+  background-color: var(--hostel-light-orange);
+}
+
+.hover\:bg-hostel-lightBlue:hover {
+  background-color: var(--hostel-light-blue);
+}
+
+.border-hostel-blue {
+  border-color: var(--hostel-blue);
+}
+
+.hover\:text-hostel-blue:hover {
+  color: var(--hostel-blue);
+}
