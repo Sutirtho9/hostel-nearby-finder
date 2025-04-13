@@ -1,8 +1,7 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, School } from 'lucide-react';
 import { University, searchUniversities } from '@/data/universities';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
   Command,
@@ -25,27 +24,24 @@ interface UniversitySearchProps {
 
 const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: UniversitySearchProps) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<University[]>([]);
   
   useEffect(() => {
     const fetchResults = () => {
       const searchResults = searchUniversities(query);
-      setResults(searchResults.slice(0, 10)); // Limit to 10 results
+      setResults(searchResults); // Already limited to 10 in the searchUniversities function
     };
     
     fetchResults();
   }, [query]);
   
   const handleSelect = (university: University) => {
-    setValue(university.name);
     onUniversitySelect(university);
     setOpen(false);
   };
   
   const clearSelection = () => {
-    setValue("");
     onUniversitySelect(null);
   };
   
@@ -98,8 +94,15 @@ const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: University
                     onSelect={() => handleSelect(university)}
                   >
                     <School className="mr-2 h-4 w-4" />
-                    <div className="flex flex-col">
-                      <span>{university.name}</span>
+                    <div className="flex flex-col flex-1">
+                      <div className="flex justify-between items-center w-full">
+                        <span className="font-medium">{university.name}</span>
+                        {university.rank && (
+                          <span className="text-xs bg-hostel-blue text-white px-1.5 py-0.5 rounded-full">
+                            #{university.rank}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-xs text-muted-foreground">{university.location}</span>
                     </div>
                   </CommandItem>
@@ -114,8 +117,15 @@ const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: University
         <div className="p-3 bg-hostel-lightBlue bg-opacity-10 rounded-md">
           <div className="flex items-start">
             <School className="mr-2 h-5 w-5 text-hostel-blue mt-0.5" />
-            <div>
-              <p className="font-medium">{selectedUniversity.name}</p>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <p className="font-medium">{selectedUniversity.name}</p>
+                {selectedUniversity.rank && (
+                  <span className="text-xs bg-hostel-blue text-white px-2 py-1 rounded-full">
+                    NIRF Rank #{selectedUniversity.rank}
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground">{selectedUniversity.location}</p>
               <p className="text-sm mt-1">Showing hostels within 10km radius</p>
             </div>
