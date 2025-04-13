@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Hostel } from '@/components/HostelCard';
 import { University } from '@/data/universities';
@@ -49,7 +50,7 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
     
     try {
       // Create map instance
-      const mapOptions = {
+      const mapOptions: google.maps.MapOptions = {
         zoom: university ? 13 : 12,
         mapTypeControl: true,
         streetViewControl: false,
