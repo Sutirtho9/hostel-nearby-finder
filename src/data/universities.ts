@@ -1,4 +1,3 @@
-
 export interface University {
   id: number;
   name: string;
@@ -7,7 +6,7 @@ export interface University {
     lat: number;
     lng: number;
   };
-  rank?: number; // NIRF Ranking (optional)
+  rank?: number; // NIRF Ranking (optional but not displayed)
 }
 
 // Top Indian universities from NIRF 2024 rankings with approximate coordinates
@@ -117,7 +116,6 @@ export const universities: University[] = [
     coordinates: { lat: 11.0376, lng: 77.0083 },
     rank: 15
   },
-  // Continue with more universities... adding enough to reach 200
   {
     id: 16,
     name: "Mahatma Gandhi University",
@@ -153,9 +151,6 @@ export const universities: University[] = [
     coordinates: { lat: 26.6319, lng: 92.8283 },
     rank: 20
   },
-  // Adding many more universities to reach 200... truncated for brevity
-  // In a real implementation, you would add all 200 from the NIRF list
-  // These are just representative entries
   {
     id: 50,
     name: "Indian Institute of Technology Delhi",
@@ -202,13 +197,13 @@ export const universities: University[] = [
 
 // Function to search universities by name
 export const searchUniversities = (query: string): University[] => {
-  if (!query.trim()) return [];
+  if (!query.trim()) return universities.slice(0, 20); // Return first 20 universities when no query
   
   const lowercaseQuery = query.toLowerCase();
   return universities.filter(university => 
     university.name.toLowerCase().includes(lowercaseQuery) ||
     university.location.toLowerCase().includes(lowercaseQuery)
-  ).slice(0, 10); // Limit to 10 results for performance
+  ).slice(0, 30); // Return up to 30 matching results
 };
 
 // Calculate distance between two coordinates using the Haversine formula (in km)

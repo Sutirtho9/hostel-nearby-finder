@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Hostel } from '@/components/HostelCard';
 import { University } from '@/data/universities';
@@ -16,7 +15,6 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
   const [mapLoaded, setMapLoaded] = useState(false);
   
   useEffect(() => {
-    // Load Google Maps API script
     if (!document.getElementById('google-maps-script')) {
       const script = document.createElement('script');
       script.id = 'google-maps-script';
@@ -34,7 +32,6 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
       document.head.appendChild(script);
       
       return () => {
-        // Clean up script if component unmounts before loading
         if (document.getElementById('google-maps-script')) {
           document.getElementById('google-maps-script')?.remove();
         }
@@ -45,11 +42,9 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
   }, []);
   
   useEffect(() => {
-    // Initialize map once Google Maps API is loaded and we have data
     if (!mapLoaded || !mapRef.current || !window.google) return;
     
     try {
-      // Create map instance
       const mapOptions: google.maps.MapOptions = {
         zoom: university ? 13 : 12,
         mapTypeControl: true,
@@ -62,24 +57,21 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
       const bounds = new google.maps.LatLngBounds();
       const infoWindow = new google.maps.InfoWindow();
       
-      // If there's a university selected, show it and its 10km radius
       if (university) {
         const uniPosition = new google.maps.LatLng(
           university.coordinates.lat, 
           university.coordinates.lng
         );
         
-        // Center map on university
         map.setCenter(uniPosition);
         
-        // Add university marker
         const uniMarker = new google.maps.Marker({
           position: uniPosition,
           map: map,
           title: university.name,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            fillColor: '#3b82f6', // hostel-blue
+            fillColor: '#3b82f6',
             fillOpacity: 1,
             strokeColor: '#3b82f6',
             strokeWeight: 1,
@@ -87,13 +79,11 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
           }
         });
         
-        // Add click event to university marker
         uniMarker.addListener('click', () => {
           infoWindow.setContent(`
             <div>
               <h3 style="font-weight: bold;">${university.name}</h3>
               <p>${university.location}</p>
-              ${university.rank ? `<p>NIRF Rank: ${university.rank}</p>` : ''}
             </div>
           `);
           infoWindow.open(map, uniMarker);
@@ -101,7 +91,6 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
         
         bounds.extend(uniPosition);
         
-        // Add a 10km radius circle
         const radiusCircle = new google.maps.Circle({
           strokeColor: '#3b82f6',
           strokeOpacity: 0.3,
@@ -110,49 +99,40 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
           fillOpacity: 0.1,
           map: map,
           center: uniPosition,
-          radius: 10000, // 10km in meters
+          radius: 10000
         });
       }
       
-      // Add hostel markers
       hostels.forEach((hostel) => {
-        // Extract coordinates from hostel location
         let hostelCoords;
         
         if (hostel.location.includes(',')) {
-          // Check if it's directly a coordinate string
           const [lat, lng] = hostel.location.split(',').map(Number);
           if (!isNaN(lat) && !isNaN(lng)) {
             hostelCoords = { lat, lng };
           }
         }
         
-        // If no coordinates found, generate random ones near the university or city
         if (!hostelCoords) {
           const cities: { [key: string]: { lat: number, lng: number } } = {
             'Delhi': { lat: 28.6139, lng: 77.2090 },
             'Mumbai': { lat: 19.0760, lng: 72.8777 },
             'Bangalore': { lat: 12.9716, lng: 77.5946 },
             'Chennai': { lat: 13.0827, lng: 80.2707 },
-            // ... other cities
           };
           
-          // Extract city name from location string
           const cityMatch = hostel.location.match(/^([^,]+)/);
           const city = cityMatch ? cityMatch[0] : '';
           
-          // Get base coordinates
           let baseCoords;
           if (university) {
             baseCoords = university.coordinates;
           } else if (cities[city]) {
             baseCoords = cities[city];
           } else {
-            // Default to center of India if no match
             baseCoords = { lat: 20.5937, lng: 78.9629 };
           }
           
-          // Add a small random offset to make points different
           const latOffset = (Math.random() - 0.5) * 0.05;
           const lngOffset = (Math.random() - 0.5) * 0.05;
           
@@ -164,14 +144,13 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
         
         const position = new google.maps.LatLng(hostelCoords.lat, hostelCoords.lng);
         
-        // Create marker
         const hostelMarker = new google.maps.Marker({
           position: position,
           map: map,
           title: hostel.name,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            fillColor: '#f97316', // hostel-orange
+            fillColor: '#f97316',
             fillOpacity: 1,
             strokeColor: '#f97316',
             strokeWeight: 1,
@@ -179,7 +158,6 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
           }
         });
         
-        // Add click event to hostel marker
         hostelMarker.addListener('click', () => {
           infoWindow.setContent(`
             <div>
@@ -196,12 +174,10 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
         bounds.extend(position);
       });
       
-      // Fit map to bounds if we have multiple markers
       if (hostels.length > 1 || (hostels.length > 0 && !university)) {
         map.fitBounds(bounds);
       }
       
-      // Add a disclaimer for demo purposes
       const disclaimer = document.createElement('div');
       disclaimer.className = 'disclaimer';
       disclaimer.innerHTML = `
@@ -250,7 +226,6 @@ const HostelMap = ({ hostels, university, className = "h-96" }: HostelMapProps) 
         )}
       </div>
       
-      {/* Display a note about API key replacement */}
       <div className="absolute bottom-2 left-2 text-xs bg-white bg-opacity-75 p-1 rounded-md z-10">
         To use actual maps, replace "YOUR_GOOGLE_MAPS_API_KEY" in the code
       </div>

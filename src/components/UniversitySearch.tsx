@@ -30,7 +30,7 @@ const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: University
   useEffect(() => {
     const fetchResults = () => {
       const searchResults = searchUniversities(query);
-      setResults(searchResults); // Already limited to 10 in the searchUniversities function
+      setResults(searchResults);
     };
     
     fetchResults();
@@ -97,11 +97,6 @@ const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: University
                     <div className="flex flex-col flex-1">
                       <div className="flex justify-between items-center w-full">
                         <span className="font-medium">{university.name}</span>
-                        {university.rank && (
-                          <span className="text-xs bg-hostel-blue text-white px-1.5 py-0.5 rounded-full">
-                            #{university.rank}
-                          </span>
-                        )}
                       </div>
                       <span className="text-xs text-muted-foreground">{university.location}</span>
                     </div>
@@ -120,11 +115,6 @@ const UniversitySearch = ({ onUniversitySelect, selectedUniversity }: University
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <p className="font-medium">{selectedUniversity.name}</p>
-                {selectedUniversity.rank && (
-                  <span className="text-xs bg-hostel-blue text-white px-2 py-1 rounded-full">
-                    NIRF Rank #{selectedUniversity.rank}
-                  </span>
-                )}
               </div>
               <p className="text-sm text-muted-foreground">{selectedUniversity.location}</p>
               <p className="text-sm mt-1">Showing hostels within 10km radius</p>
