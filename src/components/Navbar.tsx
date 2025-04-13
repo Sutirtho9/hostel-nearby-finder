@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Home, User, Menu, LogOut } from 'lucide-react';
@@ -41,7 +40,6 @@ const Navbar = () => {
             <span className="text-hostel-blue font-bold text-2xl">Hostel<span className="text-hostel-orange">Connect</span></span>
           </Link>
           
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/" className="flex items-center text-gray-700 hover:text-hostel-blue transition">
               <Home size={18} className="mr-1" />
@@ -90,7 +88,6 @@ const Navbar = () => {
             )}
           </div>
           
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Menu />
@@ -98,7 +95,6 @@ const Navbar = () => {
           </div>
         </div>
         
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden mt-2 py-2">
             <Link to="/" className="block py-2 px-4 text-gray-700 hover:bg-gray-100">Home</Link>

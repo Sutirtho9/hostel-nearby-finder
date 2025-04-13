@@ -23,10 +23,13 @@ export const useAuth = () => {
       // In a real app, this would connect to a backend
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Use a name derived from the email for the demo
+      const name = email.split('@')[0];
+      
       // Simulate successful login for demo purposes
       const mockUser = {
         id: '123456',
-        name: 'Test User',
+        name: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize first letter
         email: email
       };
       
