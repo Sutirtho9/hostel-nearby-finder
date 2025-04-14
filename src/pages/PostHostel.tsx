@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from "zod";
@@ -28,7 +27,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Navbar from '@/components/Navbar';
-import { Camera, MapPin, Building, Bed, IndianRupee, Upload } from 'lucide-react';
+import { 
+  Camera, 
+  MapPin, 
+  Building, 
+  Bed, 
+  IndianRupee, 
+  Upload, 
+  X, 
+  CloudUpload, 
+  Image 
+} from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { processImageUpload } from '@/utils/imageUpload';
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -52,6 +63,9 @@ const PostHostel = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Redirect if not authenticated or not a hostel provider
   React.useEffect(() => {
@@ -90,21 +104,103 @@ const PostHostel = () => {
     },
   });
 
-  const handleImageUpload = () => {
-    // In a real app, we would handle file uploads to a server
-    // For demo purposes, we'll just add placeholder images
-    setUploadedImages([
-      ...uploadedImages,
-      `https://source.unsplash.com/random/800x600?hostel&sig=${Date.now()}`
-    ]);
+  const handleLocalFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    
+    if (!files || files.length === 0) return;
+    
+    setIsUploading(true);
+    
+    try {
+      const uploadedUrls: string[] = [];
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const result = await processImageUpload(file);
+        
+        if (result.success) {
+          uploadedUrls.push(result.url);
+        } else {
+          throw new Error(result.error);
+        }
+      }
+      
+      setUploadedImages([...uploadedImages, ...uploadedUrls]);
+      
+      toast({
+        title: "Images Uploaded",
+        description: `Successfully uploaded ${uploadedUrls.length} image${uploadedUrls.length > 1 ? 's' : ''}`,
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Upload Failed",
+        description: "Unable to upload one or more images",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadDialogOpen(false);
+      
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleGoogleDriveUpload = async () => {
+    // Using the Google Picker API
+    setIsUploading(true);
+    
+    try {
+      // For demo purposes - add placeholder images
+      // In a real implementation, this would connect to Google Drive API
+      const demoImageUrls = [
+        `https://source.unsplash.com/random/800x600?hostel&sig=${Date.now()}`,
+        `https://source.unsplash.com/random/800x600?dorm&sig=${Date.now() + 1}`
+      ];
+      
+      setUploadedImages([...uploadedImages, ...demoImageUrls]);
+      
+      toast({
+        title: "Images Imported",
+        description: "Successfully imported images from Google Drive",
+      });
+    } catch (error) {
+      console.error("Google Drive import error:", error);
+      toast({
+        title: "Import Failed",
+        description: "Unable to import images from Google Drive",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadDialogOpen(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = [...uploadedImages];
+    newImages.splice(index, 1);
+    setUploadedImages(newImages);
     
     toast({
-      title: "Image Uploaded",
-      description: "Your image has been uploaded successfully",
+      title: "Image Removed",
+      description: "The image has been removed",
     });
   };
 
   const onSubmit = async (data: FormValues) => {
+    if (uploadedImages.length === 0) {
+      toast({
+        title: "Images Required",
+        description: "Please upload at least one image of your hostel",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -154,6 +250,7 @@ const PostHostel = () => {
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium flex items-center">
                       <Building className="mr-2 text-hostel-blue" size={20} />
@@ -363,34 +460,90 @@ const PostHostel = () => {
                       Photos
                     </h3>
                     
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <div className="mb-4">
-                        <Button 
-                          type="button"
-                          variant="outline"
-                          onClick={handleImageUpload}
-                          className="mx-auto"
-                        >
-                          <Upload className="mr-2 h-4 w-4" />
-                          Upload Images
-                        </Button>
-                      </div>
-                      
-                      {uploadedImages.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-                          {uploadedImages.map((image, index) => (
-                            <img 
-                              key={index} 
-                              src={image} 
-                              alt={`Hostel image ${index + 1}`} 
-                              className="h-24 w-full object-cover rounded-md"
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-gray-500">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                      <div className="flex flex-col items-center mb-4 space-y-3">
+                        <p className="text-sm text-gray-500 text-center mb-2">
                           Upload photos of your hostel to attract more students
                         </p>
+                        
+                        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button 
+                              type="button"
+                              variant="outline"
+                              className="w-full max-w-xs"
+                            >
+                              <Upload className="mr-2 h-4 w-4" />
+                              Upload Images
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                              <DialogTitle>Upload Images</DialogTitle>
+                              <DialogDescription>
+                                Choose how you want to upload images of your hostel
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid grid-cols-1 gap-4 py-4">
+                              <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleLocalFileUpload}
+                              />
+                              
+                              <Button 
+                                onClick={() => fileInputRef.current?.click()} 
+                                variant="outline"
+                                className="flex items-center justify-center gap-2"
+                                disabled={isUploading}
+                              >
+                                <Image className="h-5 w-5" />
+                                Upload from your device
+                              </Button>
+                              
+                              <Button 
+                                onClick={handleGoogleDriveUpload} 
+                                variant="outline"
+                                className="flex items-center justify-center gap-2"
+                                disabled={isUploading}
+                              >
+                                <CloudUpload className="h-5 w-5" />
+                                Import from Google Drive
+                              </Button>
+                              
+                              {isUploading && (
+                                <div className="text-center">
+                                  <p className="text-sm text-gray-500">Uploading...</p>
+                                </div>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      
+                      {uploadedImages.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+                          {uploadedImages.map((image, index) => (
+                            <div key={index} className="relative group">
+                              <img 
+                                src={image} 
+                                alt={`Hostel image ${index + 1}`} 
+                                className="h-24 w-full object-cover rounded-md"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                aria-label={`Remove image ${index + 1}`}
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </div>
