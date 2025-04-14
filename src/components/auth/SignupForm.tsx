@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,12 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string(),
+  userType: z.enum(["student", "hostelProvider"], {
+    required_error: "Please select a user type",
+  }),
   termsAccepted: z.boolean().refine((value) => value === true, {
     message: "You must accept the terms and conditions",
   }),
@@ -31,7 +36,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface SignupFormProps {
-  onSignup: (name: string, email: string, password: string) => Promise<void>;
+  onSignup: (name: string, email: string, password: string, userType: "student" | "hostelProvider") => Promise<void>;
 }
 
 const SignupForm = ({ onSignup }: SignupFormProps) => {
@@ -46,6 +51,7 @@ const SignupForm = ({ onSignup }: SignupFormProps) => {
       email: "",
       password: "",
       confirmPassword: "",
+      userType: "student",
       termsAccepted: false,
     },
   });
@@ -54,7 +60,7 @@ const SignupForm = ({ onSignup }: SignupFormProps) => {
     setIsLoading(true);
     
     try {
-      await onSignup(data.name, data.email, data.password);
+      await onSignup(data.name, data.email, data.password, data.userType);
     } catch (error) {
       console.error("Signup error:", error);
     } finally {
@@ -163,6 +169,41 @@ const SignupForm = ({ onSignup }: SignupFormProps) => {
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </Button>
                 </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="userType"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>I am a</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-col space-y-1"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="student" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Student looking for accommodation
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="hostelProvider" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Hostel provider looking to list property
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>

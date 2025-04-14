@@ -13,14 +13,20 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const { login, signup } = useAuthContext();
 
-  const handleLogin = async (email: string, password: string) => {
-    const success = await login(email, password);
+  const handleLogin = async (email: string, password: string, userType: "student" | "hostelProvider") => {
+    const success = await login(email, password, userType);
     if (success) {
       toast({
         title: "Login Successful",
         description: "You have successfully logged in",
       });
-      navigate('/');
+      
+      // Redirect based on user type
+      if (userType === "hostelProvider") {
+        navigate('/post-hostel');
+      } else {
+        navigate('/');
+      }
     } else {
       toast({
         title: "Login Failed",
@@ -30,14 +36,20 @@ const AuthPage = () => {
     }
   };
 
-  const handleSignup = async (name: string, email: string, password: string) => {
-    const success = await signup(name, email, password);
+  const handleSignup = async (name: string, email: string, password: string, userType: "student" | "hostelProvider") => {
+    const success = await signup(name, email, password, userType);
     if (success) {
       toast({
         title: "Account Created Successfully",
         description: "Your account has been created and you are now logged in",
       });
-      navigate('/');
+      
+      // Redirect based on user type
+      if (userType === "hostelProvider") {
+        navigate('/post-hostel');
+      } else {
+        navigate('/');
+      }
     } else {
       toast({
         title: "Signup Failed",

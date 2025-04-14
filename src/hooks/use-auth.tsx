@@ -5,6 +5,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  userType: "student" | "hostelProvider";
 }
 
 export const useAuth = () => {
@@ -16,7 +17,7 @@ export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!initialUser);
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string, userType: "student" | "hostelProvider" = "student"): Promise<boolean> => {
     setIsLoading(true);
     try {
       // This is a mock implementation
@@ -30,7 +31,8 @@ export const useAuth = () => {
       const mockUser = {
         id: '123456',
         name: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize first letter
-        email: email
+        email: email,
+        userType: userType
       };
       
       setUser(mockUser);
@@ -45,7 +47,7 @@ export const useAuth = () => {
     }
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string, userType: "student" | "hostelProvider" = "student"): Promise<boolean> => {
     setIsLoading(true);
     try {
       // This is a mock implementation
@@ -56,7 +58,8 @@ export const useAuth = () => {
       const mockUser = {
         id: '123456',
         name: name,
-        email: email
+        email: email,
+        userType: userType
       };
       
       setUser(mockUser);
