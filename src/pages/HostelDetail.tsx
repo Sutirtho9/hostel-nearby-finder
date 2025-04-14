@@ -7,7 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Star, Calendar, Users, ArrowLeft, Wifi, Coffee, CheckCircle } from 'lucide-react';
+import { MapPin, Star, Calendar, Users, ArrowLeft, Wifi, Coffee, CheckCircle, Dumbbell, Book, ShieldCheck } from 'lucide-react';
 
 const HostelDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +57,28 @@ const HostelDetail = () => {
     return stars;
   };
 
+  // Function to render amenity icons
+  const renderAmenityIcon = (amenity: string) => {
+    switch (amenity.toLowerCase()) {
+      case 'wifi':
+        return <Wifi size={18} className="mr-2 text-hostel-blue" />;
+      case 'breakfast':
+        return <Coffee size={18} className="mr-2 text-hostel-blue" />;
+      case 'social':
+        return <Users size={18} className="mr-2 text-hostel-blue" />;
+      case 'gym':
+        return <Dumbbell size={18} className="mr-2 text-hostel-blue" />;
+      case 'library':
+      case 'study rooms':
+      case 'study areas':
+        return <Book size={18} className="mr-2 text-hostel-blue" />;
+      case 'security':
+        return <ShieldCheck size={18} className="mr-2 text-hostel-blue" />;
+      default:
+        return <CheckCircle size={18} className="mr-2 text-hostel-blue" />;
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -87,6 +109,9 @@ const HostelDetail = () => {
       </div>
     );
   }
+
+  // Get city name from location
+  const city = hostel.location.split(',')[0].trim();
 
   return (
     <div>
@@ -150,24 +175,12 @@ const HostelDetail = () => {
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-4">Amenities</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {hostel.amenities.includes('WiFi') && (
-                  <div className="flex items-center">
-                    <Wifi size={18} className="mr-2 text-hostel-blue" />
-                    <span>Free WiFi</span>
+                {hostel.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center">
+                    {renderAmenityIcon(amenity)}
+                    <span>{amenity}</span>
                   </div>
-                )}
-                {hostel.amenities.includes('Breakfast') && (
-                  <div className="flex items-center">
-                    <Coffee size={18} className="mr-2 text-hostel-blue" />
-                    <span>Breakfast included</span>
-                  </div>
-                )}
-                {hostel.amenities.includes('Social') && (
-                  <div className="flex items-center">
-                    <Users size={18} className="mr-2 text-hostel-blue" />
-                    <span>Social activities</span>
-                  </div>
-                )}
+                ))}
                 <div className="flex items-center">
                   <CheckCircle size={18} className="mr-2 text-hostel-blue" />
                   <span>24/7 Reception</span>
@@ -187,7 +200,10 @@ const HostelDetail = () => {
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-4">Description</h2>
               <p className="text-gray-700">
-                Located in the heart of {hostel.location.split(',')[0]}, {hostel.name} offers comfortable accommodation for travelers on a budget. With a vibrant atmosphere and friendly staff, it's the perfect place to meet fellow travelers and explore the city. The hostel is just {hostel.distance} from the city center, making it easy to access all the main attractions.
+                Located in the heart of {city}, {hostel.name} offers comfortable accommodation for travelers and students on a budget. With a vibrant atmosphere and friendly staff, it's the perfect place to meet fellow travelers and explore the city. The hostel is just {hostel.distance} from the city center, making it easy to access all the main attractions.
+              </p>
+              <p className="text-gray-700 mt-3">
+                Our rooms are clean, comfortable and designed with students in mind. We provide free high-speed WiFi throughout the property and our common areas are perfect for studying or socializing. The hostel is within walking distance to major universities and educational institutions in {city}.
               </p>
             </div>
             
@@ -230,3 +246,4 @@ const HostelDetail = () => {
 };
 
 export default HostelDetail;
+

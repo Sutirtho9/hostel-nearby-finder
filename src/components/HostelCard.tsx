@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, MapPin, Users, Wifi, Coffee } from 'lucide-react';
+import { Star, MapPin, Users, Wifi, Coffee, Dumbbell, Book, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -60,18 +60,26 @@ const HostelCard = ({ hostel }: HostelCardProps) => {
         return <Coffee size={16} />;
       case 'social':
         return <Users size={16} />;
+      case 'gym':
+        return <Dumbbell size={16} />;
+      case 'library':
+      case 'study rooms':
+      case 'study areas':
+        return <Book size={16} />;
+      case 'security':
+        return <ShieldCheck size={16} />;
       default:
         return null;
     }
   };
   
   return (
-    <Card className="hostel-card overflow-hidden">
+    <Card className="hostel-card overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="relative h-48">
         <img 
           src={hostel.image} 
           alt={hostel.name} 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-2 right-2">
           <Badge className="bg-hostel-orange text-white">
@@ -95,12 +103,17 @@ const HostelCard = ({ hostel }: HostelCardProps) => {
         </div>
         
         <div className="flex flex-wrap gap-2 mt-2">
-          {hostel.amenities.map((amenity, index) => (
+          {hostel.amenities.slice(0, 3).map((amenity, index) => (
             <Badge key={index} variant="outline" className="flex items-center gap-1 text-xs">
               {renderAmenityIcon(amenity)}
               {amenity}
             </Badge>
           ))}
+          {hostel.amenities.length > 3 && (
+            <Badge variant="outline" className="flex items-center gap-1 text-xs">
+              +{hostel.amenities.length - 3} more
+            </Badge>
+          )}
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
@@ -116,3 +129,4 @@ const HostelCard = ({ hostel }: HostelCardProps) => {
 };
 
 export default HostelCard;
+

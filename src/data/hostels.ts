@@ -1,4 +1,3 @@
-
 import { Hostel } from "@/components/HostelCard";
 
 export const hostels: Hostel[] = [
@@ -101,6 +100,106 @@ export const hostels: Hostel[] = [
     location: "Shimla, India",
     distance: "0.8 km",
     amenities: ["WiFi", "Breakfast", "Social"]
+  },
+  {
+    id: 11,
+    name: "Emerald City Hostel",
+    image: "https://images.unsplash.com/photo-1576354302919-96748cb8299e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.6,
+    price: 24,
+    location: "Kochi, India",
+    distance: "1.0 km",
+    amenities: ["WiFi", "Social", "Laundry"]
+  },
+  {
+    id: 12,
+    name: "Zenith Student Lodge",
+    image: "https://images.unsplash.com/photo-1577784424948-6a8da8b1273e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8aG9zdGVsfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    rating: 4.1,
+    price: 16,
+    location: "Pune, India",
+    distance: "0.3 km",
+    amenities: ["WiFi", "Library", "Study Rooms"]
+  },
+  {
+    id: 13,
+    name: "Lotus University Hostel",
+    image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aG9zdGVsfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+    rating: 4.4,
+    price: 19,
+    location: "Chandigarh, India",
+    distance: "0.5 km",
+    amenities: ["WiFi", "Breakfast", "Gym"]
+  },
+  {
+    id: 14,
+    name: "Harmony House",
+    image: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.9,
+    price: 32,
+    location: "Udaipur, India",
+    distance: "0.7 km",
+    amenities: ["WiFi", "Breakfast", "Social", "Pool"]
+  },
+  {
+    id: 15,
+    name: "Royal Heritage Hostel",
+    image: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.7,
+    price: 29,
+    location: "Jaisalmer, India",
+    distance: "0.6 km",
+    amenities: ["WiFi", "Breakfast", "Cultural Tours"]
+  },
+  {
+    id: 16,
+    name: "Sunset Valley Hostel",
+    image: "https://images.unsplash.com/photo-1558979158-65a1eaa08691?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.6,
+    price: 26,
+    location: "Dharamshala, India",
+    distance: "1.2 km",
+    amenities: ["WiFi", "Breakfast", "Meditation"]
+  },
+  {
+    id: 17,
+    name: "Horizon Student Dorms",
+    image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.2,
+    price: 17,
+    location: "Ahmedabad, India",
+    distance: "0.4 km",
+    amenities: ["WiFi", "Study Areas", "Library"]
+  },
+  {
+    id: 18,
+    name: "Serenity Girls Hostel",
+    image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.8,
+    price: 23,
+    location: "Mysore, India",
+    distance: "0.9 km",
+    amenities: ["WiFi", "Breakfast", "Security"]
+  },
+  {
+    id: 19,
+    name: "Sapphire Boys Hostel",
+    image: "https://images.unsplash.com/photo-1568495248636-6432b97bd949?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.3,
+    price: 20,
+    location: "Lucknow, India",
+    distance: "0.8 km",
+    amenities: ["WiFi", "Sports Facilities", "Gym"]
+  },
+  {
+    id: 20,
+    name: "The Scholar's Abode",
+    image: "https://images.unsplash.com/photo-1600607687644-c7171b49e161?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGhvc3RlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+    rating: 4.5,
+    price: 22,
+    location: "Bhopal, India",
+    distance: "0.5 km",
+    amenities: ["WiFi", "Library", "Study Rooms"]
   }
 ];
 
@@ -108,24 +207,18 @@ export const getHostelById = (id: number): Hostel | undefined => {
   return hostels.find(hostel => hostel.id === id);
 };
 
-// Function to get all Indian cities from hostels
 export const getAllCities = (): string[] => {
   const cities = hostels.map(hostel => {
-    // Extract city name from location (assuming format is "City, India")
     const cityMatch = hostel.location.match(/^([^,]+)/);
     return cityMatch ? cityMatch[0] : hostel.location;
   });
   
-  // Remove duplicates and sort alphabetically
   return [...new Set(cities)].sort();
 };
 
-// Function to simulate a search based on location
 export const searchHostels = (location: string): Hostel[] => {
-  // If location is empty, return all hostels
   if (!location) return hostels;
   
-  // If location is a specific city, filter by that city
   return hostels.filter(hostel => 
     hostel.location.toLowerCase().includes(location.toLowerCase())
   );
